@@ -22,6 +22,15 @@ class User extends Authenticatable
      *
      * @return array<string, string>
      */
+    public function profils()
+    {
+        return $this->hasOne(Profil::class);
+    }
+    public function offres()
+    {
+        return $this->hasMany(Offre::class)
+                    ->where('role','Recruteur');
+    }
     protected function casts(): array
     {
         return [
