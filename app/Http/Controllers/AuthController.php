@@ -26,7 +26,7 @@ class AuthController extends Controller implements HasMiddleware
             'name' => 'required|string|max:255',
             'email' => 'required|string|email|max:255|unique:users',
             'password' => 'required|string|min:6',
-            'role' => 'required|in:candidate,recruteur,admin'
+            'role' => 'required|in:candidat,recruteur,admin'
         ]);
 
         if ($validator->fails()) {
@@ -58,6 +58,8 @@ class AuthController extends Controller implements HasMiddleware
     public function me()
     {
         return response()->json(Auth::user());
+//        return response()->json(auth('api')::user());
+//        return response()->json(JWTAuth::user());
     }
 
     public function logout()
@@ -76,8 +78,12 @@ class AuthController extends Controller implements HasMiddleware
         return response()->json([
             'access_token' => $token,
             'token_type' => 'bearer',
-            'expires_in' => Auth::factory()->getTTL() * 60,
-            'user' => Auth::user()
+            //badalt hado:
+//            'expires_in' => Auth::factory()->getTTL() * 60,
+//            'user' => Auth::user()
+
+            'expires_in' => JWTAuth::factory()->getTTL() * 60,
+            'user' => JWTAuth::user()
         ]);
     }
 }

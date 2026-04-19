@@ -24,7 +24,7 @@ class DatabaseSeeder extends Seeder
 
         User::factory()
             ->count(10)
-            ->state(['role' => 'candidate'])
+            ->state(['role' => 'candidat'])
             ->create()
             ->each(function ($user) {
                 $user->profile()->create(
