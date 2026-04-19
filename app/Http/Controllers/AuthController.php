@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Events\CandidatureDeposee;
 use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Hash;
@@ -41,6 +42,7 @@ class AuthController extends Controller implements HasMiddleware
         ]);
 
         $token = JWTAuth::fromUser($user);
+
         return $this->respondWithToken($token);
     }
 
