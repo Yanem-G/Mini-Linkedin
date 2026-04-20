@@ -23,7 +23,7 @@ class User extends Authenticatable implements JWTSubject
      *
      * @return array<string, string>
      */
-    public function profile() ////rani badalte hadi kanat profils() (padaltha 3la kbal methode profile() likina fi factory)
+    public function profile()
     {
         return $this->hasOne(Profil::class);
     }
@@ -39,6 +39,8 @@ class User extends Authenticatable implements JWTSubject
             'password' => 'hashed',
         ];
     }
+
+
     public function getJWTIdentifier() { return $this->getKey(); }
     public function getJWTCustomClaims() { return ['role' => $this->role]; }
 }

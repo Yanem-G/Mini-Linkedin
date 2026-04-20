@@ -35,7 +35,7 @@ Route::middleware('auth:api')->group(function () {
         Route::put('offres/{offre}/activer', [AdminController::class, 'setOffre']);
     });
 
-    Route::middleware('role:candidat')->group(function () {
+    Route::middleware('role:Candidat')->group(function () {
         Route::post('profil', [ProfilController::class, 'store']);
         Route::put('profil', [ProfilController::class, 'update']);
         Route::get('profil', [ProfilController::class, 'show']);
