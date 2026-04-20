@@ -18,6 +18,7 @@ return new class extends Migration
             $table->text('description');
             $table->string('localisation');
             $table->enum('type', ['CDI', 'CDD', 'Stage']);
+            $table->enum('actif', ['Oui', 'Non'])->default('Oui');
             $table->timestamps();
         });
     }

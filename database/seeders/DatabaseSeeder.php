@@ -22,14 +22,19 @@ class DatabaseSeeder extends Seeder
             ->has(Offre::factory()->count(rand(2, 3)), 'offres')
             ->create();
 
-        User::factory()
+        $users = User::factory()
             ->count(10)
             ->state(['role' => 'candidat'])
-            ->create()
-            ->each(function ($user) {
+            ->create();
+            /*->each(function ($user) {
                 $user->profile()->create(
                     Profil::factory()->make()->toArray()
                 );
-            });
+            });*/
+        foreach ($users as $user) {
+            $user->profile()->create(
+                Profil::factory()->make()->toArray()
+            );
+        }
     }
 }
