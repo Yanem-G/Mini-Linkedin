@@ -54,7 +54,5 @@ class ProfilController extends Controller
         $profil->competences()->detach($competence);
         return response()->json(['message' => 'Compétence supprimée avec succès']);
     }
-
-    /* Pour parcourir les offres disponibles pour le candidat */
     
 }

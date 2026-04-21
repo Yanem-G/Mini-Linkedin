@@ -19,7 +19,7 @@ Route::middleware('auth:api')->group(function () {
     Route::get('offres', [OffreController::class, 'index']);
     Route::get('offres/{offre}', [OffreController::class, 'show']);
 
-    Route::middleware('role:recruteur')->group(function () {
+    Route::middleware('role:Recruteur')->group(function () {
         Route::post('offres', [OffreController::class, 'store']);
         Route::put('offres/{offre}', [OffreController::class, 'update']);
         Route::delete('offres/{offre}', [OffreController::class, 'destroy']);
@@ -28,7 +28,7 @@ Route::middleware('auth:api')->group(function () {
         Route::patch('candidatures/{candidature}/statut', [CandidatureController::class, 'status']);
     });
 
-    Route::middleware('role:admin')->group(function () { 
+    Route::middleware('role:Admin')->group(function () { 
         Route::get('admin/users', [AdminController::class, 'index']);
         Route::delete('admin/users/{user}', [AdminController::class, 'supprimerCompte']);
         Route::patch('admin/offres/{offre}', [AdminController::class, 'setOffre']); 

@@ -27,7 +27,7 @@ class AuthController extends Controller implements HasMiddleware
             'name' => 'required|string|max:255',
             'email' => 'required|string|email|max:255|unique:users',
             'password' => 'required|string|min:6',
-            'role' => 'required|in:candidat,recruteur,admin'
+            'role' => 'required|in:Candidat,Recruteur,Admin'
         ]);
 
         if ($validator->fails()) {
