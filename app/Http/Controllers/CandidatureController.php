@@ -2,6 +2,8 @@
 
 namespace App\Http\Controllers;
 
+use App\Events\CandidatureDeposee;
+use App\Events\StatutCandidatureMis;
 use Illuminate\Http\Request;
 
 use App\Models\Offre;
@@ -20,8 +22,13 @@ class CandidatureController extends Controller
             'offre_id' => $offre->id,
             'message' => $validate['message'] ?? null,
         ]);
+
+        event(new CandidatureDeposee($candidature));
+
         return response()->json(['message' => 'Candidature envoyée avec succès','candidature' => $candidature], 201);
     }
+
+
     public function mesCandidatures(Request $request){
         $candidatures = $request->user()->candidatures;
         return response()->json($candidatures);
@@ -31,6 +38,7 @@ class CandidatureController extends Controller
         $candidature = $offres->candidatures;
         return response()->json(['message'=>'Candidature reçues :','candidature' => $candidature]);
     }
+
     public function status(Request $request,$candidature){
         $validate = $request->validate([
             'status' => 'required|in:En attente,Acceptée,Refusée',
@@ -38,7 +46,15 @@ class CandidatureController extends Controller
             $candidatures = Candidature::whereHas('offres', function ($q) use ($request) {
             $q->where('user_id', $request->user()->id);
         })->findOrFail($candidature);
+
+        $ancienStatus = $candidatures->status;
+
         $candidatures->update(['status' => $validate['status']]);
+
+        event(new StatutCandidatureMis($candidatures,$ancienStatus));
+
+
         return response()->json(['message'=>'Status mis à jour avec succès','candidature' => $candidatures]);
     }
+
 }
