@@ -14,8 +14,8 @@ class ProfilController extends Controller
         }
         $validate = $request->validate([
             'bio' => 'nullable|string',
-            'experience' => 'nullable|string',
-            'education' => 'nullable|string',
+            'titre' => 'nullable|string',
+            'disponible' => 'nullable|in:Oui,Non',
         ]);
         $profil = $request->user()->profile()->create($validate);
         return response()->json(['message' => 'profil créé avec succes','profil' => $profil], 201);
@@ -29,8 +29,8 @@ class ProfilController extends Controller
     {
         $validate = $request->validate([
             'bio' => 'nullable|string',
-            'experience' => 'nullable|string',
-            'education' => 'nullable|string',
+            'titre' => 'nullable|string',
+            'disponible' => 'nullable|in:Oui,Non',
         ]);
         $profil = $request->user()->profile;
         $profil->update($validate);
