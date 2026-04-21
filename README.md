@@ -1,58 +1,90 @@
-<p align="center"><a href="https://laravel.com" target="_blank"><img src="https://raw.githubusercontent.com/laravel/art/master/logo-lockup/5%20SVG/2%20CMYK/1%20Full%20Color/laravel-logolockup-cmyk-red.svg" width="400" alt="Laravel Logo"></a></p>
+# Mini LinkedIn API - Plateforme de Recrutement
 
-<p align="center">
-<a href="https://github.com/laravel/framework/actions"><img src="https://github.com/laravel/framework/workflows/tests/badge.svg" alt="Build Status"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/dt/laravel/framework" alt="Total Downloads"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/v/laravel/framework" alt="Latest Stable Version"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/l/laravel/framework" alt="License"></a>
-</p>
+##  Description du Projet
+Ce projet est une API backend construite avec Laravel pour une plateforme de recrutement. Elle permet la mise en relation entre candidats et recruteurs avec une gestion complète des profils, des offres d'emploi, des candidatures et un système de monitoring via des événements.
 
-## About Laravel
+## Guide d'Installation et de Création
 
-Laravel is a web application framework with expressive, elegant syntax. We believe development must be an enjoyable and creative experience to be truly fulfilling. Laravel takes the pain out of development by easing common tasks used in many web projects, such as:
-
-- [Simple, fast routing engine](https://laravel.com/docs/routing).
-- [Powerful dependency injection container](https://laravel.com/docs/container).
-- Multiple back-ends for [session](https://laravel.com/docs/session) and [cache](https://laravel.com/docs/cache) storage.
-- Expressive, intuitive [database ORM](https://laravel.com/docs/eloquent).
-- Database agnostic [schema migrations](https://laravel.com/docs/migrations).
-- [Robust background job processing](https://laravel.com/docs/queues).
-- [Real-time event broadcasting](https://laravel.com/docs/broadcasting).
-
-Laravel is accessible, powerful, and provides tools required for large, robust applications.
-
-## Learning Laravel
-
-Laravel has the most extensive and thorough [documentation](https://laravel.com/docs) and video tutorial library of all modern web application frameworks, making it a breeze to get started with the framework.
-
-In addition, [Laracasts](https://laracasts.com) contains thousands of video tutorials on a range of topics including Laravel, modern PHP, unit testing, and JavaScript. Boost your skills by digging into our comprehensive video library.
-
-You can also watch bite-sized lessons with real-world projects on [Laravel Learn](https://laravel.com/learn), where you will be guided through building a Laravel application from scratch while learning PHP fundamentals.
-
-## Agentic Development
-
-Laravel's predictable structure and conventions make it ideal for AI coding agents like Claude Code, Cursor, and GitHub Copilot. Install [Laravel Boost](https://laravel.com/docs/ai) to supercharge your AI workflow:
+# 1. Initialisation du Projet
+```bash
+composer create-project laravel/laravel minilinkedin
+cd minilinkedin
+```
+# 2. Configuration de l'Authentification JWT (Tymon)
 
 ```bash
-composer require laravel/boost --dev
-
-php artisan boost:install
+composer require tymon/jwt-auth
+php artisan vendor:publish --provider="Tymon\JWTAuth\Providers\LaravelServiceProvider"
+php artisan jwt:secret
+```
+# 3. Modélisation de la Base de Données
+Génération des modèles et des migrations pour les entités et la table pivot :
+### Modèles et Migrations de base
+```bash
+php artisan make:model Profil -m
+php artisan make:model Competence -m
+php artisan make:model Offre -m
+php artisan make:model Candidature -m
+```
+### Création de la table pivot competence_profil
+```bash
+php artisan make:migration create_competence_profil_table
+```
+# 4. Structure de la Table Pivot (competence_profil)
+Dans le fichier de migration database/migrations competence_profil_table.php :
+```bash
+Schema::create('competence_profil', function (Blueprint $table) {
+    $table->id();
+    $table->foreignId('profil_id')->constrained()->onDelete('cascade');
+    $table->foreignId('competence_id')->constrained()->onDelete('cascade');
+    $table->enum('niveau', ['débutant', 'intermédiaire', 'expert']);
+    $table->timestamps();
+});
+```
+# 5. Développement des Contrôleurs
+```bash
+php artisan make:controller AuthController
+php artisan make:controller ProfilController
+php artisan make:controller OffreController
+php artisan make:controller CandidatureController
+php artisan make:controller AdminController
+```
+# 6. Système d'Events & Listeners
+```bash
+php artisan make:event CandidatureDeposee
+php artisan make:event StatutCandidatureMis
+php artisan make:listener LogCandidature --event=CandidatureDeposee
+php artisan make:listener LogStatutChange--event=StatutCandidatureMis
+```
+# 7. Migration et Seeders
+```bash
+php artisan migrate:fresh --seed
 ```
 
-Boost provides your agent 15+ tools and skills that help agents build Laravel applications while following best practices.
+# Récapitulatif des Routes (Endpoints)
+| Méthode | Endpoint | Accès | Action |
+| :--- | :--- | :--- | :--- |
+| **POST** | `/api/login` | Public | Authentification et Token |
+| **POST** | `/api/profil` | Candidat | Création du profil |
+| **POST** | `/api/profil/competences` | Candidat | Ajout via `competence_profil` |
+| **GET** | `/api/offres` | Tous | Liste des offres (Pagination 10) |
+| **POST** | `/api/offres` | Recruteur | Publication d'offre |
+| **POST** | `/api/offres/{id}/candidater` | Candidat | Postuler (Trigger Event) |
+| **PATCH** | `/api/candidatures/{id}/statut` | Recruteur | Modifier statut (Trigger Event) |
+| **GET** | `/api/admin/users` | Admin | Gestion des utilisateurs |
+# Règles de Gestion
+Sécurité : Un recruteur ne gère que ses offres. Un candidat ne voit que ses candidatures.
 
-## Contributing
+Autorisation : Utilisation de Middleware pour restreindre l'accès par rôle (candidat, recruteur, admin).
 
-Thank you for considering contributing to the Laravel framework! The contribution guide can be found in the [Laravel documentation](https://laravel.com/docs/contributions).
-
-## Code of Conduct
-
-In order to ensure that the Laravel community is welcoming to all, please review and abide by the [Code of Conduct](https://laravel.com/docs/contributions#code-of-conduct).
-
-## Security Vulnerabilities
-
-If you discover a security vulnerability within Laravel, please send an e-mail to Taylor Otwell via [taylor@laravel.com](mailto:taylor@laravel.com). All security vulnerabilities will be promptly addressed.
-
-## License
-
-The Laravel framework is open-sourced software licensed under the [MIT license](https://opensource.org/licenses/MIT).
+Monitoring : Chaque action sur une candidature est enregistrée dans storage/logs/candidatures.log.
+# Tests avec Postman
+L'API est accompagnée d'une collection Postman (MiniLinkedin.postman_collection.json) permettant de valider les scénarios fonctionnels complets.
+## 1. Cycle d'Authentification et Création d'Utilisateur
+Le processus débute par la gestion des accès :Inscription (Register) : Création d'un compte utilisateur en spécifiant le nom, l'email et surtout le rôle (Candidat, Recruteur ou Admin), ce qui détermine les permissions sur l'API.Connexion (Login) : Authentification via email et mot de passe pour obtenir un Bearer Token JWT. Ce token doit être inclus dans le Header de chaque requête protégée.Vérification (Me) : Validation de la session active pour récupérer les informations de l'utilisateur connecté.
+## 2. Gestion des Profils et Compétences
+Une fois connecté en tant que candidat, le flux suivant est testé :Initialisation du Profil : Création unique du profil avec bio et titre professionnel.Enrichissement technique : Ajout de compétences via la table pivot competence_profil. Les tests valident l'attribution d'un niveau (ex: "Débutant") à une compétence spécifique (ID).Maintenance : Modification des informations ou retrait d'une compétence pour tester l'intégrité des relations Eloquent.
+## 3. Flux des Candidatures et Monitoring (Events)
+Les scénarios de recrutement permettent de vérifier le découplage de la logique applicative :Dépôt de candidature : La soumission d'une candidature par un candidat déclenche l'événement CandidatureDeposee. Le test confirme que les informations (nom du candidat, titre de l'offre) sont enregistrées dans storage/logs/candidatures.log.Gestion du statut : Lorsqu'un recruteur modifie le statut d'une candidature reçue, l'événement StatutCandidatureMis est activé. Le système enregistre alors l'ancien et le nouveau statut dans les logs.
+## 4. Contrôle des Autorisations et Sécurité
+Des tests de restriction d'accès (règles d'ownership) garantissent la confidentialité des données :Validation 403 : Tentative d'accès ou de modification d'une ressource appartenant à un autre utilisateur (ex: un recruteur essayant de modifier une offre dont il n'est pas l'auteur).Validation 401 : Tentative d'appel aux routes sans token valide.
