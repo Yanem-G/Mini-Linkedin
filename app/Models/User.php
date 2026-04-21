@@ -29,8 +29,12 @@ class User extends Authenticatable implements JWTSubject
     }
     public function offres()
     {
-        return $this->hasMany(Offre::class)
-                    ->where('role','Recruteur');
+        return $this->hasMany(Offre::class);
+    }
+
+    public function candidatures()
+    {
+        return $this->hasManyThrough(Candidature::class, Profil::class);
     }
 
 

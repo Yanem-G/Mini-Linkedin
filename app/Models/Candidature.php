@@ -9,6 +9,8 @@ use Illuminate\Database\Eloquent\Attributes\Fillable;
 class Candidature extends Model
 {
     //
+
+
     public function offres()
     {
         return $this->belongsTo(Offre::class);

@@ -7,7 +7,7 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Attributes\Fillable;
 
-#[Fillable(['titre', 'description', 'location', 'type'])]
+#[Fillable(['titre', 'description', 'localisation', 'type'])]
 class Offre extends Model
 {
     //

@@ -9,14 +9,14 @@ class OffreController extends Controller
     //
     public function index(Request $request){
             $validated = $request->validate([
-            'location' => 'sometimes|string|max:255',
+            'localisation' => 'sometimes|string|max:255',
             'type' => 'sometimes|in:CDI,CDD,Stage',
         ]);
 
         $query = $request->user()->offres();
 
-        if ($request->filled('location')) {
-            $query->where('location', 'like', '%' . $validated['location'] . '%');
+        if ($request->filled('localisation')) {
+            $query->where('localisation', 'like', '%' . $validated['localisation'] . '%');
         }
 
         if ($request->filled('type')) {
@@ -28,40 +28,49 @@ class OffreController extends Controller
         return response()->json($offres);
     }
     public function show(Request $request,$offre){
-        if(!$request->user()->offres()->find($offre)){
-            return response()->json(['message'=>'Offre n\'existe pas'],400);
-        }
-        return response()->json($offre);
+
+//        if(!$request->user()->offres()->find($offre)){
+//            return response()->json(['message'=>'Offre n\'existe pas'],400);
+//        }
+        return response()->json($request->user()->offres);
     }
     public function store(Request $request){
-        if($request->user()->offres){
-            return response()->json(['message'=>'Offre existe déjà'],400);
-        }
+
         $validate = $request->validate([
             'titre'=>'string|max:255',
             'description'=>'nullable|string',
-            'location'=>'string|max:255',
+            'localisation'=>'string|max:255',
             'type'=>'in:CDI,CDD,Stage',
         ]);
         $offre = $request->user()->offres()->create($validate);
         return response()->json(['message' => 'offre créé avec succes','profil' => $offre], 201);
     }
-    public function update(Request $request,$offre){
-        if(!$request->user()->offres()->find($offre)){
-            return response()->json(['message'=>'Offre n\'existe pas'],400);
+
+
+    public function update(Request $request,$offer_id){
+        $offre = $request->user()->offres()->find($offer_id);
+
+
+        if (!$offre) {
+            return response()->json(['message' => 'Offre n\'existe pas ou accès refusé'], 404);
         }
+
         $validate = $request->validate([
             'titre'=>'string|max:255',
-            'description'=>'text|nullable',
-            'location'=>'string|max:255',
+            'description'=>'string|nullable',
+            'localisation'=>'string|max:255',
             'type'=>'in:CDI,CDD,Stage',
         ]);
         $offre->update($validate);
         return response()->json(['message' => 'offre mise à jour avec succes','profil' => $offre]);
     }
-    public function destroy(Request $request,$offre){
-        if(!$request->user()->offres()->find($offre)){
-            return response()->json(['message'=>'Offre n\'existe pas'],400);
+
+
+
+    public function destroy(Request $request,$offer_id){
+        $offre = $request->user()->offres()->find($offer_id);
+        if (!$offre) {
+            return response()->json(['message' => 'Offre n\'existe pas ou accès refusé'], 404);
         }
         $offre->delete();
         return response()->json(['message'=>'offre supprimer avec succès']);

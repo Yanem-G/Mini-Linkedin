@@ -13,17 +13,14 @@ use Illuminate\Support\Facades\Auth;
 class CandidatureController extends Controller
 {
     //
-    public function Candidater(Request $request,$offre){
-        $offre = Offre::findOrFail($offre);
+    public function Candidater(Request $request,$offreId){
+        $offre = Offre::findOrFail($offreId);
 
         $validate = $request->validate([
             'message' => 'nullable|string',
         ]);
-//        $candidature = $request->user()->candidatures()->create([
-//            'offre_id' => $offre->id,
-//            'message' => $validate['message'] ?? null,
-//        ]);
-        $profil = Auth::user()->profil;
+
+        $profil = Auth::user()->profile;
         if (!$profil) {
             return response()->json(['message' => 'Vous devez créer un profil avant de postuler'], 400);
         }
@@ -44,6 +41,9 @@ class CandidatureController extends Controller
         $candidatures = $request->user()->candidatures;
         return response()->json($candidatures);
     }
+
+
+
     public function candidatures(Request $request,$offre){
         $offres = $request->user()->offres()->findOrFail($offre);
         $candidature = $offres->candidatures;
@@ -66,6 +66,7 @@ class CandidatureController extends Controller
 
 
         return response()->json(['message'=>'Status mis à jour avec succès','candidature' => $candidatures]);
+
     }
 
 }

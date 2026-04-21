@@ -23,14 +23,18 @@ class LogCandiature
     public function handle(CandidatureDeposee $event): void
     {
         $candidature = $event->candidature;
+
+        $candidatNom = $candidature->profil->user->name ?? 'Inconnu';
+        $offreTitre = $candidature->offre->titre ?? 'Offre supprimée';
+
         $message = sprintf(
-            "[%s] Candidat: %s a postulé à l'offre: %s",
-            now(),
-            $candidature->profil->user->name,
-            $candidature->offre->titre
+            "[%s] Candidat: %s a postulé à l'offre: %s (ID Candidature: %d)",
+            now()->format('Y-m-d H:i:s'),
+            $candidatNom,
+            $offreTitre,
+            $candidature->id
         );
 
-        // Enregistrement dans storage/logs/candidatures.log
         Log::channel('candidatures_file')->info($message);
     }
 
