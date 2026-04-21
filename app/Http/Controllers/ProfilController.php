@@ -56,5 +56,5 @@ class ProfilController extends Controller
     }
 
     /* Pour parcourir les offres disponibles pour le candidat */
-    
+
 }

@@ -8,6 +8,7 @@ use Illuminate\Http\Request;
 
 use App\Models\Offre;
 use App\Models\Candidature;
+use Illuminate\Support\Facades\Auth;
 
 class CandidatureController extends Controller
 {
@@ -18,9 +19,19 @@ class CandidatureController extends Controller
         $validate = $request->validate([
             'message' => 'nullable|string',
         ]);
-        $candidature = $request->user()->candidatures()->create([
+//        $candidature = $request->user()->candidatures()->create([
+//            'offre_id' => $offre->id,
+//            'message' => $validate['message'] ?? null,
+//        ]);
+        $profil = Auth::user()->profil;
+        if (!$profil) {
+            return response()->json(['message' => 'Vous devez créer un profil avant de postuler'], 400);
+        }
+        $candidature = Candidature::create([
             'offre_id' => $offre->id,
-            'message' => $validate['message'] ?? null,
+            'profil_id' => $profil->id,
+            'message' => $request->message ?? null,
+            'statut' => 'en attente',
         ]);
 
         event(new CandidatureDeposee($candidature));

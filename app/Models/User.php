@@ -32,6 +32,10 @@ class User extends Authenticatable implements JWTSubject
         return $this->hasMany(Offre::class)
                     ->where('role','Recruteur');
     }
+
+
+
+
     protected function casts(): array
     {
         return [
