@@ -9,7 +9,7 @@ use Illuminate\Database\Eloquent\Model;
 #[Fillable(['titre', 'bio', 'disponible'])]
 class Profil extends Model
 {
-    //
+
     use HasFactory;
     public function users()
     {
