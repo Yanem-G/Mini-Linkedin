@@ -6,12 +6,13 @@ use Illuminate\Support\Facades\Schema;
 
 return new class extends Migration
 {
+
     /**
      * Run the migrations.
      */
     public function up(): void
     {
-        Schema::create('profil__competences', function (Blueprint $table) {
+        Schema::create('competence_profil', function (Blueprint $table) {
             $table->id();
             $table->foreignId("competence_id")->constrained()->onDelete("cascade");
             $table->foreignId("profil_id")->constrained()->onDelete("cascade");
@@ -25,6 +26,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('profil__competences');
+        //
     }
 };
