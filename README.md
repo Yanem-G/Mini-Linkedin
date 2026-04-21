@@ -88,3 +88,7 @@ Une fois connecté en tant que candidat, le flux suivant est testé :Initialisat
 Les scénarios de recrutement permettent de vérifier le découplage de la logique applicative :Dépôt de candidature : La soumission d'une candidature par un candidat déclenche l'événement CandidatureDeposee. Le test confirme que les informations (nom du candidat, titre de l'offre) sont enregistrées dans storage/logs/candidatures.log.Gestion du statut : Lorsqu'un recruteur modifie le statut d'une candidature reçue, l'événement StatutCandidatureMis est activé. Le système enregistre alors l'ancien et le nouveau statut dans les logs.
 ## 4. Contrôle des Autorisations et Sécurité
 Des tests de restriction d'accès (règles d'ownership) garantissent la confidentialité des données :Validation 403 : Tentative d'accès ou de modification d'une ressource appartenant à un autre utilisateur (ex: un recruteur essayant de modifier une offre dont il n'est pas l'auteur).Validation 401 : Tentative d'appel aux routes sans token valide.
+## Autheur
+**Aymen Gnaoui** <br>
+**Abdessamad Amchar**<br>
+**Marwane Iguider**
